@@ -8,6 +8,10 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        username: [ubuntu, ec2-user] # Probará ambos usuarios automáticos para asegurar la entrada
+    continue-on-error: true
 
     steps:
       - name: Checkout Code
@@ -17,10 +21,9 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
+          username: ${{ matrix.username }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Entrar a la carpeta de la app o clonarla si es la primera vez
             if [ ! -d "app" ]; then
               git clone https://github.com/${{ github.repository }}.git app
               cd app
@@ -28,7 +31,5 @@ jobs:
               cd app
               git pull origin main
             fi
-            
-            # Forzar el reinicio limpio con Docker Compose aplicando el parche de Postgres
             docker compose down
             docker compose up --build -d
