@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # --- SERVICIO 1: LA BASE DE DATOS ---
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: springboot-postgres-db
+    environment:
+      POSTGRES_DB: mi_base_de_datos
+      POSTGRES_USER: mi_usuario
+      POSTGRES_PASSWORD: mi_password_secreta
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - spring-network
+
+  # --- SERVICIO 2: TU APLICACIÓN JAVA ---
+  # --- SERVICIO 2: TU APLICACIÓN JAVA ---
+  api-app:
+    build: .
+    container_name: springboot-api-app
+    ports:
+      - "5000:8080"
+    depends_on:
+      - postgres-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/mi_base_de_datos
+      SPRING_DATASOURCE_USERNAME: mi_usuario
+      SPRING_DATASOURCE_PASSWORD: mi_password_secreta
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      
+      # 💥 AGREGA ESTAS DOS LÍNEAS PARA OBLIGAR A USAR POSTGRES:
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+    networks:
+      - spring-network
+
+volumes:
+  postgres_data:
+
+networks:
+  spring-network:

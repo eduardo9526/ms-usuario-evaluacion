@@ -1,0 +1,54 @@
+### A. REGISTRAR UN USUARIO (Ruta Pública)
+POST http://localhost:5000/auth/register
+Content-Type: application/json
+
+{
+  "nombre": "Eduardo Martinez",
+  "email": "eduue@correo.cl",
+  "password": "claveSegura123",
+  "rol": "ESTUDIANTE"
+}
+
+### B. LOGIN (Aquí es donde generas el token)
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+  "email": "eduue@correo.cl",
+  "password": "claveSegura123"
+}
+
+### --------------------------------------------------
+
+
+### 1. USUARIO - LISTAR
+GET http://localhost:5000/usuarios
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJyb2wiOiJFU1RVRElBTlRFIiwic3ViIjoiZWR1dWVAY29ycmVvLmNsIiwiaWF0IjoxNzgwNzAyNzIyLCJleHAiOjE3ODA3MDYzMjJ9.kd0uB3n3dkO_1a-I4e2oVgYgEXWy5BGtmnMU-fvxWodCmXxkRT1hUWlH7E7W3pO8
+
+
+
+### 3. USUARIO - BUSCAR POR ID
+GET http://localhost:5000/usuarios/41
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJyb2wiOiJFU1RVRElBTlRFIiwic3ViIjoiZWR1dWVAY29ycmVlZW8uY2wiLCJpYXQiOjE3ODA3MDExMzAsImV4cCI6MTc4MDcwNDczMH0.ZcmyvNAq5-ivljNyNXE5wlzBd8yPslSTFRA_O9rwmKwYFq15fc6qfBdLt5RxgZAi
+
+
+
+
+### 4. USUARIO - ACTUALIZAR
+PUT http://localhost:5000/usuarios/43
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJyb2wiOiJFU1RVRElBTlRFIiwic3ViIjoiZWR1dWVAY29ycmVvLmNsIiwiaWF0IjoxNzgwNzAyNzIyLCJleHAiOjE3ODA3MDYzMjJ9.kd0uB3n3dkO_1a-I4e2oVgYgEXWy5BGtmnMU-fvxWodCmXxkRT1hUWlH7E7W3pO8
+
+
+
+{
+  "nombre": "Diego Muñoz",
+  "email": "diego@correo.caaa",
+  "password": "123456",
+  "rol": "ESTUDIANTE"
+}
+
+
+### 5. USUARIO - ELIMINAR
+DELETE http://localhost:5000/usuarios/42
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJyb2wiOiJFU1RVRElBTlRFIiwic3ViIjoiZWR1dWVAY29ycmVvLmNsIiwiaWF0IjoxNzgwNzAyNzIyLCJleHAiOjE3ODA3MDYzMjJ9.kd0uB3n3dkO_1a-I4e2oVgYgEXWy5BGtmnMU-fvxWodCmXxkRT1hUWlH7E7W3pO8
