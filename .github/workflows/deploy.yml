@@ -1,0 +1,34 @@
+name: Deploy Microservice to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Entrar a la carpeta de la app o clonarla si es la primera vez
+            if [ ! -d "app" ]; then
+              git clone https://github.com/${{ github.repository }}.git app
+              cd app
+            else
+              cd app
+              git pull origin main
+            fi
+            
+            # Forzar el reinicio limpio con Docker Compose aplicando el parche de Postgres
+            docker compose down
+            docker compose up --build -d
