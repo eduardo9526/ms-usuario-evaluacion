@@ -46,7 +46,7 @@ public class WebSecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Arquitectura sin estado (Stateless)
             .authorizeHttpRequests(auth -> auth
                 // 1. Agregamos tus controladores reales (/autenticación y /usuarios para POST de registro)
-                .requestMatchers("/autenticación/**").permitAll()
+                .requestMatchers("/auth/**").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.POST, "/usuarios").permitAll() // Deja crear usuarios libremente
                 
                 // 2. Corregimos las rutas de Swagger y la documentación de OpenAPI
