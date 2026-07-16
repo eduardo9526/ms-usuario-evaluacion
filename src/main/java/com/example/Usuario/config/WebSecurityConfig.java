@@ -38,26 +38,21 @@ public class WebSecurityConfig {
     }
 
     // Configuración principal de las reglas de seguridad HTTP
-    // Configuración principal de las reglas de seguridad HTTP
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable()) // Deshabilitamos CSRF ya que los tokens JWT son inmunes a este ataque sin cookies
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Arquitectura sin estado (Stateless)
-            .authorizeHttpRequests(auth -> auth
-                // 1. Agregamos tus controladores reales (/autenticación y /usuarios para POST de registro)
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers(org.springframework.http.HttpMethod.POST, "/usuarios").permitAll() // Deja crear usuarios libremente
-                
-                // 2. Corregimos las rutas de Swagger y la documentación de OpenAPI
-                .requestMatchers("/v3/api-docs/**", "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                
-                // Cualquier otra petición (como los GET o DELETE de usuarios) requerirá obligatoriamente el JWT válido
-                .anyRequest().authenticated()
-            )
-            // Enganchamos nuestro filtro aduanero antes del filtro de autenticación por defecto de Spring
-            .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+   @Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para APIs REST
+        .authorizeHttpRequests(auth -> auth
+            // 🚀 Permitir acceso libre a los endpoints de registro, login y documentación
+            .requestMatchers("/auth/**").permitAll()
+            .requestMatchers("/usuarios").permitAll()
+            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+            // Cualquier otra petición requerirá un token JWT válido
+            .anyRequest().authenticated()
+        )
+        // Agregamos tu filtro JWT corregido justo antes del filtro de usuario/contraseña estándar
+        .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+    return http.build();
+}
 }
