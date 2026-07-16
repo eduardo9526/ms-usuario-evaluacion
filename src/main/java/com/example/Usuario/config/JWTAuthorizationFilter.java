@@ -34,6 +34,20 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         
+        // 🚀 OBTENER RUTA: Extraemos la URI de la petición actual
+        String path = request.getRequestURI();
+
+        // 🚀 EXCLUSIÓN: Si es una ruta pública, omitimos la validación del JWT de inmediato
+        if (path.startsWith("/auth/") || 
+            path.equals("/usuarios") || 
+            path.contains("/swagger") || 
+            path.contains("/v3/api-docs") || 
+            path.contains("/api-docs")) {
+            
+            filterChain.doFilter(request, response);
+            return; // Detenemos la ejecución de este método para que no intente buscar un token
+        }
+        
         // 1. Extraemos el encabezado "Authorization" de la petición HTTP
         String authHeader = request.getHeader("Authorization");
 
